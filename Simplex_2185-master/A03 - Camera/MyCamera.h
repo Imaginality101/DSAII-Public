@@ -16,6 +16,15 @@ class MyCamera
 	vector3 m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
 	vector3 m_v3Above = vector3(0.0f, 1.0f, 0.0f); //What is above the camera
 
+	// forward vector
+	vector3 m_v3Forward = vector3(0.0f, 0.0f, -1.0f);
+
+	// upward vector
+	vector3 m_v3Upward = vector3(0.0f, 1.0f, 0.0f);
+
+	// right vector
+	vector3 m_v3Right = vector3(0.0f, 0.0f, 0.0f);
+
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
 	float m_fFOV = 45.0f; //Field of View
