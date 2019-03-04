@@ -16,15 +16,6 @@ class MyCamera
 	vector3 m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
 	vector3 m_v3Above = vector3(0.0f, 1.0f, 0.0f); //What is above the camera
 
-	// forward vector
-	vector3 m_v3Forward = vector3(0.0f, 0.0f, -1.0f);
-
-	// upward vector
-	vector3 m_v3Upward = vector3(0.0f, 1.0f, 0.0f);
-
-	// right vector
-	vector3 m_v3Right = glm::cross(m_v3Forward, m_v3Upward);
-
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
 	float m_fFOV = 45.0f; //Field of View
@@ -37,6 +28,15 @@ class MyCamera
 
 	matrix4 m_m4View; //View matrix
 	matrix4 m_m4Projection; //Projection Matrix
+
+	// forward vector
+	vector3 m_v3Forward = vector3(0.0f, 0.0f, -1.0f);
+
+	// upward vector
+	vector3 m_v3Upward = vector3(0.0f, 1.0f, 0.0f);
+
+	// right vector
+	vector3 m_v3Right = glm::cross(m_v3Forward, m_v3Upward);
 public:
 	/*
 	USAGE: Constructor
@@ -240,12 +240,12 @@ public:
 	*/
 	void MoveSideways(float a_fDistance = 0.1f);
 
-	// set the local vectors
+	// set the local vectors - make life easier
 	void SetForward(vector3 _vector3);
 	void SetUpward(vector3 _vector3);
 	void SetRight(vector3 _vector3);
 
-	// get the local vectors
+	// get the local vectors - make life easier
 	vector3 GetForward();
 	vector3 GetUpward();
 	vector3 GetRight();
