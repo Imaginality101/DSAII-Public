@@ -23,7 +23,7 @@ class MyCamera
 	vector3 m_v3Upward = vector3(0.0f, 1.0f, 0.0f);
 
 	// right vector
-	vector3 m_v3Right = vector3(0.0f, 0.0f, 0.0f);
+	vector3 m_v3Right = glm::cross(m_v3Forward, m_v3Upward);
 
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
@@ -239,6 +239,16 @@ public:
 	OUTPUT: ---
 	*/
 	void MoveSideways(float a_fDistance = 0.1f);
+
+	// set the local vectors
+	void SetForward(vector3 _vector3);
+	void SetUpward(vector3 _vector3);
+	void SetRight(vector3 _vector3);
+
+	// get the local vectors
+	vector3 GetForward();
+	vector3 GetUpward();
+	vector3 GetRight();
 };
 
 } //namespace Simplex

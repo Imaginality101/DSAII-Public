@@ -161,15 +161,51 @@ void MyCamera::MoveForward(float a_fDistance)
 void MyCamera::MoveVertical(float a_fDistance)
 {
 	//Needs to be defined
-	m_v3Position += m_v3Forward * a_fDistance;
-	m_v3Target += m_v3Forward * a_fDistance;
-	m_v3Above += m_v3Forward * a_fDistance;
+	m_v3Position += m_v3Upward * a_fDistance;
+	m_v3Target += m_v3Upward * a_fDistance;
+	m_v3Above += m_v3Upward * a_fDistance;
 }
 
 void MyCamera::MoveSideways(float a_fDistance)
 {
 	//Needs to be defined
-	m_v3Position += m_v3Forward * a_fDistance;
-	m_v3Target += m_v3Forward * a_fDistance;
-	m_v3Above += m_v3Forward * a_fDistance;
+	m_v3Position += m_v3Right * a_fDistance;
+	m_v3Target += m_v3Right * a_fDistance;
+	m_v3Above += m_v3Right * a_fDistance;
+}
+
+void MyCamera::SetForward(vector3 _vector3)
+{
+	// sets the forward
+	m_v3Forward = _vector3;
+}
+
+void MyCamera::SetUpward(vector3 _vector3)
+{
+	// sets the upward
+	m_v3Upward = _vector3;
+}
+
+void MyCamera::SetRight(vector3 _vector3)
+{
+	// sets the right
+	m_v3Right = _vector3;
+}
+
+vector3 MyCamera::GetForward()
+{
+	// gets the forward
+	return m_v3Forward;
+}
+
+vector3 MyCamera::GetUpward()
+{
+	// gets the upward
+	return m_v3Upward;
+}
+
+vector3 MyCamera::GetRight()
+{
+	// gets the right
+	return m_v3Right;
 }
