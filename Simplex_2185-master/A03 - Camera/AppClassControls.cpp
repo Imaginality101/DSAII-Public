@@ -369,6 +369,18 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 
+	// clamp if rotated up or down more than 80 in either direction
+	if ((totalRotation + fAngleX) > 80 || (totalRotation + fAngleX) < -80) 
+	{
+		// stop rotating
+		fAngleX = 0;
+	}
+	else
+	{
+		// add to the current total rotation
+		totalRotation += fAngleX;
+	}
+
 	// set up two quaternians for the horizontal and vertical rotation
 	quaternion horizontal = glm::angleAxis(glm::radians(fAngleX), m_pCamera->GetRight());
 	quaternion vertical = glm::angleAxis(glm::radians(fAngleY), AXIS_Y);
@@ -377,8 +389,10 @@ void Application::CameraRotation(float a_fSpeed)
 	vector3 newForward = m_pCamera->GetForward() * vertical * horizontal;
 	vector3 newRight = m_pCamera->GetRight() * vertical;
 
-	// set the new vectors
+	// set the forward vector
 	m_pCamera->SetForward(newForward);
+
+	// set the right vector
 	m_pCamera->SetRight(newRight);
 
 	// set the new target position

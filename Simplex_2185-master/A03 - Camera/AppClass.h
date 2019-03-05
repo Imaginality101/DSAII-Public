@@ -41,6 +41,9 @@ private:
 	ControllerInput* m_pController[8]; //Controller
 	uint m_uActCont = 0; //Active Controller of the Application
 
+	// variable for total rotation
+	float totalRotation = 0;
+
 public:
 #pragma region Constructor / Run / Destructor
 	/*
