@@ -50,25 +50,50 @@ void Application::Display(void)
 	{
 	default:
 	case 1:
+		// standard
 		m_pCamera->ResetCamera();
 		break;
 	case 2:
 		m_pCamera->ResetCamera();
+
+		// render the camera as perspective
+		m_pCamera->SetPerspective(false);
 		break;
 	case 3:
 		m_pCamera->ResetCamera();
+
+		// change the position to be on the x asis and have up be relative to -1 on the Z_AXIS
+		m_pCamera->SetPositionTargetAndUpward(vector3(30.0f, 0.0f, 0.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, 0.0f, -1.0f));
 		break;
 	case 4:
 		m_pCamera->ResetCamera();
+
+		// change the position to be on th other side relative to the default
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, -15.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, 1.0f, 0.0f));
 		break;
 	case 5:
 		m_pCamera->ResetCamera();
+
+		// change the position to be on th other side relative to the default
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, -15.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, 1.0f, 0.0f));
+
+		// change the near plane to be farther from the camera
+		m_pCamera->SetNearFar(vector2(6.0f, 1000.0f));
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
+
+		// change the position to be on th other side relative to the default
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, -15.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, 1.0f, 0.0f));
+
+		// change the far plane to be closer to the camera
+		m_pCamera->SetNearFar(vector2(0.001f, 11.0f));
 		break;
 	case 7:
 		m_pCamera->ResetCamera();
+
+		// change the up to be relative to -1 on the Y_AXIS
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, 10.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, -1.0f, 0.0f));
 		break;
 	}
 
