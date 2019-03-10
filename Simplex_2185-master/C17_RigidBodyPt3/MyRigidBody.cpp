@@ -152,8 +152,8 @@ MyRigidBody::MyRigidBody(std::vector<vector3> a_pointList)
 	}
 
 	//with model matrix being the identity, local and global are the same
-	m_v3MinG = m_v3MinL;
-	m_v3MaxG = m_v3MaxL;
+	//m_v3MinG = m_v3MinL;
+	//m_v3MaxG = m_v3MaxL;
 
 	//with the max and the min we calculate the center
 	m_v3Center = (m_v3MaxL + m_v3MinL) / 2.0f;
