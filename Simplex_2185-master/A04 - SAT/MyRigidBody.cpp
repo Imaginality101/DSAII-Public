@@ -276,17 +276,208 @@ void MyRigidBody::AddToRenderList(void)
 
 uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 {
-	/*
-	Your code goes here instead of this comment;
+	// variables
+	float halfA, halfB;
+	matrix3 rotation, absRotation;
 
-	For this method, if there is an axis that separates the two objects
-	then the return will be different than 0; 1 for any separating axis
-	is ok if you are not going for the extra credit, if you could not
-	find a separating axis you need to return 0, there is an enum in
-	Simplex that might help you [eSATResults] feel free to use it.
-	(eSATResults::SAT_NONE has a value of 0)
-	*/
+	// local axis for this object
+	vector3 localAxis[3];
+	localAxis[0] = vector3(m_m4ToWorld[0]);
+	localAxis[1] = vector3(m_m4ToWorld[1]);
+	localAxis[2] = vector3(m_m4ToWorld[2]);
 
-	//there is no axis test that separates this two objects
+	// local axis for the other object
+	vector3 localAxisOther[3];
+	localAxisOther[0] = vector3(a_pOther->m_m4ToWorld[0]);
+	localAxisOther[1] = vector3(a_pOther->m_m4ToWorld[1]);
+	localAxisOther[2] = vector3(a_pOther->m_m4ToWorld[2]);
+
+	// for all 3 axis on both boxes
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			// compute the rotation matrix from their local coordinate spaces
+			rotation[i][j] = glm::dot(localAxis[i], localAxisOther[j]);
+		}
+	}
+
+	// compute the translation vector from the two center points
+	vector3 translation = a_pOther->m_v3Center - m_v3Center;
+	
+	// express the translation matrix into this objects local coordinates
+	translation = vector3(glm::dot(translation, localAxis[0]), glm::dot(translation, localAxis[1]), glm::dot(translation, localAxis[2]));
+
+	// get the absolute value rotation matrix
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			// add on a value at the end to account for when they are close enough
+			absRotation[i][j] = glm::abs(rotation[i][j]) + 0.0001f;
+		}
+	}
+
+	// for all 3 local axis on this object
+	for (int i = 0; i < 3; i++) 
+	{
+		// get the halfwidth of this object in this axis
+		halfA = m_v3HalfWidth[i];
+
+		// get the halfwidth of the other object in this axis based on the absolute value of the orientation of this object
+		halfB = a_pOther->m_v3HalfWidth[0] * absRotation[i][0] + a_pOther->m_v3HalfWidth[1] * absRotation[i][1] + a_pOther->m_v3HalfWidth[2] * absRotation[i][2];
+		
+		// if the absolute value of the translation between them is greater than the sum of their halfwidths
+		if (glm::abs(translation[i]) > halfA + halfB)
+		{
+			// they are seperated
+			return 1;
+		}
+	}
+		
+	// for all 3 local axis on the other object
+	for (int i = 0; i < 3; i++)
+	{
+		// get the halfwidth of this object in this axis based on the absolute value of the orientation of this object
+		halfA = m_v3HalfWidth[0] * absRotation[0][i] + m_v3HalfWidth[1] * absRotation[1][i] + m_v3HalfWidth[2] * absRotation[2][i];
+
+		// get the halfwidth of the other object
+		halfB = a_pOther->m_v3HalfWidth[i];
+
+		// if the absolute value of the translation, with respect to the rotation, between them is greater than the sum of their halfwidths
+		if (glm::abs(translation[0] * rotation[0][i] + translation[1] * rotation[1][i] + translation[2] * rotation[2][i]) > halfA + halfB)
+		{
+			// they are seperated
+			return 1;
+		}
+	}
+	
+	// check the cross product of the first axis on this object
+	// and the first axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[1] * absRotation[2][0] + m_v3HalfWidth[2] * absRotation[1][0];
+	halfB = a_pOther->m_v3HalfWidth[1] * absRotation[0][2] + a_pOther->m_v3HalfWidth[2] * absRotation[0][1];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[2] * rotation[1][0] - translation[1] * rotation[2][0]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// check the cross product of the first axis on this object
+	// and the second axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[1] * absRotation[2][1] + m_v3HalfWidth[2] * absRotation[1][1];
+	halfB = a_pOther->m_v3HalfWidth[0] * absRotation[0][2] + a_pOther->m_v3HalfWidth[2] * absRotation[0][0];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[2] * rotation[1][1] - translation[1] * rotation[2][1]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// check the cross product of the first axis on this object
+	// and the third axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[1] * absRotation[2][2] + m_v3HalfWidth[2] * absRotation[1][2];
+	halfB = a_pOther->m_v3HalfWidth[0] * absRotation[0][1] + a_pOther->m_v3HalfWidth[1] * absRotation[0][0];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[2] * rotation[1][2] - translation[1] * rotation[2][2]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// check the cross product of the second axis on this object
+	// and the first axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[0] * absRotation[2][0] + m_v3HalfWidth[2] * absRotation[0][0];
+	halfB = a_pOther->m_v3HalfWidth[1] * absRotation[1][2] + a_pOther->m_v3HalfWidth[2] * absRotation[1][1];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[0] * rotation[2][0] - translation[2] * rotation[0][0]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// check the cross product of the second axis on this object
+	// and the second axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[0] * absRotation[2][1] + m_v3HalfWidth[2] * absRotation[0][1];
+	halfB = a_pOther->m_v3HalfWidth[0] * absRotation[1][2] + a_pOther->m_v3HalfWidth[2] * absRotation[1][0];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[0] * rotation[2][1] - translation[2] * rotation[0][1]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// check the cross product of the second axis on this object
+	// and the third axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[0] * absRotation[2][2] + m_v3HalfWidth[2] * absRotation[0][2];
+	halfB = a_pOther->m_v3HalfWidth[0] * absRotation[1][1] + a_pOther->m_v3HalfWidth[1] * absRotation[1][0];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[0] * rotation[2][2] - translation[2] * rotation[0][2]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+	
+	// check the cross product of the third axis on this object
+	// and the first axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[0] * absRotation[1][0] + m_v3HalfWidth[1] * absRotation[0][0];
+	halfB = a_pOther->m_v3HalfWidth[1] * absRotation[2][2] + a_pOther->m_v3HalfWidth[2] * absRotation[2][1];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[1] * rotation[0][0] - translation[0] * rotation[1][0]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// check the cross product of the third axis on this object
+	// and the second axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[0] * absRotation[1][1] + m_v3HalfWidth[1] * absRotation[0][1];
+	halfB = a_pOther->m_v3HalfWidth[0] * absRotation[2][2] + a_pOther->m_v3HalfWidth[2] * absRotation[2][0];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[1] * rotation[0][1] - translation[0] * rotation[1][1]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// check the cross product of the third axis on this object
+	// and the third axis on the other object
+
+	// get their halfwidths factoring in the absolute rotation
+	halfA = m_v3HalfWidth[0] * absRotation[1][2] + m_v3HalfWidth[1] * absRotation[0][2];
+	halfB = a_pOther->m_v3HalfWidth[0] * absRotation[2][1] + a_pOther->m_v3HalfWidth[1] * absRotation[2][0];
+
+	// if the absolute value of the space between them, based on the translation with account of the rotation, is greater than the sum of their halfwidths
+	if (glm::abs(translation[1] * rotation[0][2] - translation[0] * rotation[1][2]) > halfA + halfB)
+	{
+		// they are seperated
+		return 1;
+	}
+
+	// there is no axis seperating them and they are colliding
 	return eSATResults::SAT_NONE;
 }
