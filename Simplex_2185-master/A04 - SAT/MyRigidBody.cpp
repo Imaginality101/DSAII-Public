@@ -302,10 +302,10 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 		}
 	}
 
-	// compute the translation vector from the two center points
-	vector3 translation = a_pOther->m_v3Center - m_v3Center;
+	// compute the translation vector from the two center points in global space
+	vector3 translation = a_pOther->GetCenterGlobal() - GetCenterGlobal();
 	
-	// express the translation matrix into this objects local coordinates
+	// express the translation matrix in this objects local coordinates
 	translation = vector3(glm::dot(translation, localAxis[0]), glm::dot(translation, localAxis[1]), glm::dot(translation, localAxis[2]));
 
 	// get the absolute value rotation matrix
