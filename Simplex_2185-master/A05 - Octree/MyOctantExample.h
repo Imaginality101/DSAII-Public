@@ -47,7 +47,7 @@ public:
 	- uint nIdealEntityCount = 5 -> Sets the ideal level of objects per octant
 	OUTPUT: class object
 	*/
-	MyOctant(uint a_nMaxLevel = 2, uint a_nIdealEntityCount = 5);
+	MyOctant(uint maxLevel = 2, uint idealEntityCount = 5);
 	/*
 	USAGE: Constructor
 	ARGUMENTS:
@@ -55,7 +55,7 @@ public:
 	- float a_fSize -> size of each side of the octant volume
 	OUTPUT: class object
 	*/
-	MyOctant(vector3 a_v3Center, float a_fSize);
+	MyOctant(vector3 center, float size);
 	/*
 	USAGE: Copy Constructor
 	ARGUMENTS: class object to copy
@@ -112,7 +112,7 @@ public:
 	- int a_uRBIndex -> Index of the Entity in the Entity Manager
 	OUTPUT: check of the collision
 	*/
-	bool IsColliding(uint a_uRBIndex);
+	bool IsColliding(uint index);
 	/*
 	USAGE: Displays the MyOctant volume specified by index including the objects underneath
 	ARGUMENTS:
@@ -120,21 +120,21 @@ public:
 	- vector3 a_v3Color = REYELLOW -> Color of the volume to display.
 	OUTPUT: ---
 	*/
-	void Display(uint a_nIndex, vector3 a_v3Color = C_YELLOW);
+	void Display(uint index, vector3 color = C_YELLOW);
 	/*
 	USAGE: Displays the MyOctant volume in the color specified
 	ARGUMENTS:
 	- vector3 a_v3Color = REYELLOW -> Color of the volume to display.
 	OUTPUT: ---
 	*/
-	void Display(vector3 a_v3Color = C_YELLOW);
+	void Display(vector3 color = C_YELLOW);
 	/*
 	USAGE: Displays the non empty leafs in the octree
 	ARGUMENTS:
 	- vector3 a_v3Color = REYELLOW -> Color of the volume to display.
 	OUTPUT: ---
 	*/
-	void DisplayLeafs(vector3 a_v3Color = C_YELLOW);
+	void DisplayLeafs(vector3 color = C_YELLOW);
 	/*
 	USAGE: Clears the Entity list for each node
 	ARGUMENTS: ---
@@ -152,7 +152,7 @@ public:
 	ARGUMENTS: uint a_nChild -> index of the child (from 0 to 7)
 	OUTPUT: MyOctant object (child in index)
 	*/
-	MyOctant* GetChild(uint a_nChild);
+	MyOctant* GetChild(uint child);
 	/*
 	USAGE: returns the parent of the octant
 	ARGUMENTS: ---
@@ -171,7 +171,7 @@ public:
 	- uint a_nEntities -> Number of Entities to query
 	OUTPUT: It contains at least this many Entities
 	*/
-	bool ContainsMoreThan(uint a_nEntities);
+	bool ContainsMoreThan(uint entities);
 	/*
 	USAGE: Deletes all children and the children of their children (almost sounds apocalyptic)
 	ARGUMENTS: ---
@@ -184,7 +184,7 @@ public:
 	- uint a_nMaxLevel = 3 -> Sets the maximum level of the tree while constructing it
 	OUTPUT: ---
 	*/
-	void ConstructTree(uint a_nMaxLevel = 3);
+	void ConstructTree(uint maxLevel = 3);
 	/*
 	USAGE: Traverse the tree up to the leafs and sets the objects in them to the index
 	ARGUMENTS: ---

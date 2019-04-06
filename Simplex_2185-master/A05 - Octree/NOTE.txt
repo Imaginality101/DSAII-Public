@@ -1,0 +1,7 @@
+Controls:
+
+The controls that Alberto had set up (page up/down and numberpad +/-) all work with their intended functions.
+
+I also added in two other controls. 
+* [Left Shift] will set up the optimal octree and display it.
+* [Right Shift] will turn off all octree optimization and display nothing (but the objects).
